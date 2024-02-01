@@ -31,17 +31,6 @@
     },
     "security": {
       "csp": null
-    },
-    "windows": [
-      {
-        "fullscreen": false,
-        "resizable": true,
-        "title": "adam-tool-v2",
-        "width": 1145,
-        "height": 600,
-        "minWidth": 800,
-        "minHeight": 750
-      }
-    ]
+    }
   }
 }

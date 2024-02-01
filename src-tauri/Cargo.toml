@@ -16,6 +16,8 @@ tauri-build = { version = "1.5", features = [] }
 tauri = { version = "1.5", features = ["shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
+tauri-plugin-localhost = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
+portpicker = "0.1" # used in the example to pick a random free port
 serde_json = "1.0"
 
 [features]

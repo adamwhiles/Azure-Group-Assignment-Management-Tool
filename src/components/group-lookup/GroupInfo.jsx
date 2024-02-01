@@ -2,6 +2,8 @@ import Applications from "./Applications";
 import ConfigurationProfiles from "./ConfigurationProfiles";
 import styles from "./GroupInfo.module.css";
 import Remediations from "./Remediations";
+import Scripts from "./Scripts";
+import Policies from "./Policies";
 
 export default function GroupInfo(props) {
   const group = props.dataContext;
@@ -55,6 +57,8 @@ export default function GroupInfo(props) {
         <Applications groupId={group.id} />
         <ConfigurationProfiles groupId={group.id} />
         <Remediations groupId={group.id} />
+        <Scripts groupId={group.id} />
+        <Policies groupId={group.id} />
       </div>
     </div>
   );

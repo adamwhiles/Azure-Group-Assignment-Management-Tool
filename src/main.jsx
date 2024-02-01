@@ -14,6 +14,7 @@ const store = new Store(".appSettings.json");
 
 // get the app id from the store
 const appId = await store.get("CLIENT_ID");
+const tenantId = await store.get("TENANT_ID");
 
 // app permission scopes for graph api
 const scopes = [
@@ -23,24 +24,26 @@ const scopes = [
   "DeviceManagementConfiguration.Read.All",
 ];
 
-if (appId != "") {
+if (appId != "" && tenantId != "") {
   Providers.globalProvider = new Msal2Provider({
     clientId: appId,
     scopes: scopes,
+    authority: `https://login.microsoftonline.com/${tenantId}`,
   });
 }
 
-const updateKey = (key) => {
+const updateKeys = (appId, tenantId) => {
   Providers.globalProvider = new Msal2Provider({
-    clientId: key,
+    clientId: appId,
     scopes: scopes,
+    authority: `https://login.microsoftonline.com/${tenantId}`,
   });
 };
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout store={store} updateKey={updateKey} />, // Pass the store as a prop to the RootLayout component
+    element: <RootLayout store={store} updateKeys={updateKeys} />, // Pass the store as a prop to the RootLayout component
     children: [
       {
         path: "/",

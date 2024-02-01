@@ -1,0 +1,53 @@
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap;
+    font-size: .8rem;
+  }
+  
+  .groupinfo {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    align-items: center;
+  }
+  
+  li {
+    flex-basis: 50%;
+  }
+
+  ul {
+    padding: 0;
+  }
+  
+  label, input {
+    margin: 10px;
+    padding: 5px;
+  }
+  
+  label {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+  }
+  
+  input {
+    display: inline-block;
+    width: 400px;
+  }
+
+  .assignmentswrapper {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+  }
+
+  @media only screen and (max-width: 1145px) {
+    label {
+      display: inline-block;
+      width: 100px;
+      text-align: center;
+    }
+  }
+  

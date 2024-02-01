@@ -1,18 +1,46 @@
+// main.jsx
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import App from "./App";
 import { Providers } from "@microsoft/mgt-element";
 import { Msal2Provider } from "@microsoft/mgt-msal2-provider";
 import "./styles.css";
 import GroupLookup from "./routes/grouplookup";
-import Navbar from "./components/navbar/navbar";
 import RootLayout from "./routes/Root";
+import { Store } from "tauri-plugin-store-api";
+
+// set up tauri store for azure app id
+const store = new Store(".appSettings.json");
+
+// get the app id from the store
+const appId = await store.get("CLIENT_ID");
+
+// app permission scopes for graph api
+const scopes = [
+  "device.read.all",
+  "group.read.all",
+  "devicemanagementapps.read.all",
+  "DeviceManagementConfiguration.Read.All",
+];
+
+if (appId != "") {
+  Providers.globalProvider = new Msal2Provider({
+    clientId: appId,
+    scopes: scopes,
+  });
+}
+
+const updateKey = (key) => {
+  Providers.globalProvider = new Msal2Provider({
+    clientId: key,
+    scopes: scopes,
+  });
+};
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout />,
+    element: <RootLayout store={store} updateKey={updateKey} />, // Pass the store as a prop to the RootLayout component
     children: [
       {
         path: "/",
@@ -25,16 +53,6 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-
-Providers.globalProvider = new Msal2Provider({
-  clientId: import.meta.env.VITE_CLIENT_ID,
-  scopes: [
-    "device.read.all",
-    "group.read.all",
-    "devicemanagementapps.read.all",
-    "DeviceManagementConfiguration.Read.All",
-  ],
-});
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

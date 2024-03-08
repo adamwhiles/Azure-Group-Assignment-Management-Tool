@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { ConfigurationProfile } from "../../models/ConfigurationProfile";
 import { Assignment } from "../../models/Assignment";
-import { ProviderState, Providers } from "@microsoft/mgt-element";
+import { ProviderState, Providers} from "@microsoft/mgt-element";
+import { PageIterator } from "@microsoft/microsoft-graph-client/lib/src/tasks/PageIterator";
 import styles from "./ConfigurationProfiles.module.css";
 
 export default function ConfigurationProfiles(props) {
@@ -11,7 +12,7 @@ export default function ConfigurationProfiles(props) {
   const fetchConfigurations = async () => {
     if (ProviderState.SignedIn) {
       // Iterate over configurations
-      let [deviceConfigs, gpConfigs, configPolicies] = await Promise.all([
+      let [deviceConfigs, gpConfigs] = await Promise.all([
         Providers.client
           .api("/deviceManagement/deviceConfigurations")
           .expand("assignments")
@@ -22,12 +23,38 @@ export default function ConfigurationProfiles(props) {
           .expand("assignments")
           .version("beta")
           .get(),
-        Providers.client
-          .api("/deviceManagement/configurationPolicies")
-          .expand("assignments")
-          .version("beta")
-          .get(),
       ]);
+
+      let configPolicies = [];
+
+const messages = await Providers.client
+  .api("/deviceManagement/configurationPolicies")
+  .expand("assignments")
+  .version("beta")
+  .get();
+
+if (!messages) {
+  console.log("No configuration policies found.");
+} else {
+  const pageIterator = await new PageIterator(
+    Providers.client,
+    messages,
+    (policy) => {
+      // Handle each configuration policy (e.g., add it to the configPolicies array)
+      configPolicies.push(policy);
+      // Add any other processing logic as needed
+      return true; // Continue iterating
+    },
+    (request) => {
+      // Configure subsequent page requests (if necessary)
+      // For example, add headers or query parameters
+      return request;
+    }
+  );
+
+  await pageIterator.iterate();
+}
+
       const configs = [
         ...deviceConfigs.value.map((config) => ({
           id: config.id,
@@ -61,7 +88,7 @@ export default function ConfigurationProfiles(props) {
                 : "required",
           })),
         })),
-        ...configPolicies.value.map((config) => ({
+        ...configPolicies.map((config) => ({
           id: config.id,
           displayName: config.name,
           modifiedDate: new Date(config.lastModifiedDateTime).toLocaleString(

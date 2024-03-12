@@ -4,9 +4,17 @@ import styles from "./GroupInfo.module.css";
 import Remediations from "./Remediations";
 import Scripts from "./Scripts";
 import Policies from "./Policies";
+import React, { memo } from 'react';
 
-export default function GroupInfo(props) {
-  const group = props.dataContext;
+const areEqual = (prevProps, nextProps) => {
+  // Do a deep comparison of groupInfo
+  console.log("in areEqual")
+  console.log(JSON.stringify(prevProps.groupInfo) === JSON.stringify(nextProps.groupInfo))
+  return JSON.stringify(prevProps.groupInfo) === JSON.stringify(nextProps.groupInfo);
+}
+
+const GroupInfo = memo(({ groupInfo }) => {
+  const group = groupInfo.value[0];
   console.log("in group info");
   console.log(group.displayName);
   return (
@@ -54,12 +62,14 @@ export default function GroupInfo(props) {
         </ul>
       </div>
       <div className={styles.assignmentswrapper}>
-        <Applications groupId={group.id} />
+        {group.id ? (<><Applications groupId={group.id} />
         <ConfigurationProfiles groupId={group.id} />
         <Remediations groupId={group.id} />
         <Scripts groupId={group.id} />
-        <Policies groupId={group.id} />
+        <Policies groupId={group.id} /> </>): null}
       </div>
     </div>
   );
-}
+}, areEqual);
+
+export default GroupInfo;

@@ -4,9 +4,11 @@ import styles from "./Scripts.module.css";
 
 export default function Scripts(props) {
   const [getScripts, setScripts] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchScripts = async () => {
     if (ProviderState.SignedIn) {
+      setIsLoading(true);
       // Iterate over Scripts
       let [deviceShellScripts, deviceManagementScripts] = await Promise.all([
         Providers.client
@@ -56,6 +58,7 @@ export default function Scripts(props) {
       ];
       // Update the state with the Scripts
       setScripts(Scripts);
+      setIsLoading(false);
       console.log(Scripts);
     }
   };
@@ -64,7 +67,9 @@ export default function Scripts(props) {
   }, [ProviderState]);
 
   return (
-    <div>
+    <div className={styles.card}>
+    {isLoading && <div className={styles.loader}></div>}
+      <div className={styles.container}>
       <h2>Scripts</h2>
       <div className={styles.tablecontainer}>
         <table className={styles.table}>
@@ -76,7 +81,7 @@ export default function Scripts(props) {
             </tr>
           </thead>
           <tbody>
-            {getScripts ? (
+            {!isLoading && getScripts ? (
               getScripts
                 .filter((script) => {
                   // Filter the Scripts to only show Scripts with an active assignment for the designated group
@@ -109,6 +114,7 @@ export default function Scripts(props) {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 }

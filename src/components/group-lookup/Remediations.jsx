@@ -6,10 +6,11 @@ import styles from "./Remediations.module.css";
 
 export default function Remediations(props) {
   const [getRemediations, setRemediations] = useState();
-  const [getAssignedConfigs, setAssignedConfigs] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchRemediations = async () => {
     if (ProviderState.SignedIn) {
+      setIsLoading(true);
       // Iterate over Remediations
       let [deviceHealthScripts] = await Promise.all([
         Providers.client
@@ -38,6 +39,7 @@ export default function Remediations(props) {
       ];
       // Update the state with the remediations
       setRemediations(remediations);
+      setIsLoading(false);
       console.log(remediations);
     }
   };
@@ -45,7 +47,9 @@ export default function Remediations(props) {
     fetchRemediations();
   }, [ProviderState]);
   return (
-    <div>
+    <div className={styles.card}>
+    {isLoading && <div className={styles.loader}></div>}
+      <div className={styles.container}>
       <h2>Proactive Remediations</h2>
       <div className={styles.tablecontainer}>
         <table className={styles.table}>
@@ -57,7 +61,7 @@ export default function Remediations(props) {
             </tr>
           </thead>
           <tbody>
-            {getRemediations ? (
+            {!isLoading && getRemediations ? (
               getRemediations
                 .filter((remediation) => {
                   // Filter the remediations to only show remediations with an active assignment for the designated group
@@ -90,6 +94,7 @@ export default function Remediations(props) {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 }

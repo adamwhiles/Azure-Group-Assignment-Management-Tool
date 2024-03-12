@@ -3,11 +3,15 @@ import { ProviderState, Providers } from "@microsoft/mgt-element";
 import { Application } from "../../models/Application";
 import { Assignment } from "../../models/Assignment";
 import styles from "./Applications.module.css";
+import React, { memo } from 'react';
 
-export default function Applications(props) {
+const Applications = memo (({ groupId }) => {
   const [getApps, setApps] = useState();
+  const [isLoading, setIsLoading] = useState(true);
   const fetchApps = async () => {
     if (ProviderState.SignedIn) {
+      console.log("fetching apps");
+      setIsLoading(true);
       // Get all Apps from Intune
       const apps = await Providers.client
         .api("/deviceAppManagement/mobileApps")
@@ -54,6 +58,8 @@ export default function Applications(props) {
       );
       // Update the state with the loaded applicationsList
       setApps(applicationsList);
+      console.log("done loading apps");
+      setIsLoading(false);
     }
   };
 
@@ -62,7 +68,9 @@ export default function Applications(props) {
   }, [ProviderState]);
 
   return (
-    <div>
+    <div className={styles.card}>
+    {isLoading && <div className={styles.loader}></div>}
+    <div className={styles.container}>
       <h2>Applications</h2>
       <div className={styles.tablecontainer}>
         <table className={styles.table}>
@@ -74,18 +82,18 @@ export default function Applications(props) {
             </tr>
           </thead>
           <tbody>
-            {getApps ? (
+            {!isLoading && getApps ? (
               getApps
                 .filter((app) => {
                   // Filter the apps to only show apps with an active assignment for the designated group
                   return app.assignments.some(
-                    (assignment) => assignment.groupId === props.groupId
+                    (assignment) => assignment.groupId === groupId
                   );
                 })
                 .map((app) => {
                   // Find the assignment with the matching groupId
                   let matchingAssignment = app.assignments.find(
-                    (assignment) => assignment.groupId === props.groupId
+                    (assignment) => assignment.groupId === groupId
                   );
                   // Get the intent of the matching assignment, or an empty string if not found
                   let intent = matchingAssignment
@@ -99,14 +107,13 @@ export default function Applications(props) {
                     </tr>
                   );
                 })
-            ) : (
-              <tr>
-                <td>No Apps</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
+                ) : null}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      );
+});
+
+export default Applications;

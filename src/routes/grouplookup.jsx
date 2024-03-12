@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import { Get } from "@microsoft/mgt-react";
+import { Providers } from "@microsoft/mgt-element";
 import GroupInfo from "../components/group-lookup/GroupInfo";
 import styles from "./grouplookup.module.css";
 import { unstable_useViewTransitionState } from "react-router-dom";
 
 export default function GroupLookup() {
   const [gGroupName, sGroupName] = useState();
-  const [getGroupName, setGroupName] = useState();
   const [getGroupInfo, setGroupInfo] = useState();
 
-  const lookupGroup = () => {
-    setGroupName(gGroupName);
+  const lookupGroup = async () => {
+    const client = Providers.globalProvider.graph.client;
+    const response = await client.api(`/groups?$filter=(displayName eq '${gGroupName}')&$select=id,displayName,groupTypes,membershipRule,members`).get();
+    console.log(response);
+    setGroupInfo(response);
   };
 
   return (
@@ -20,13 +22,8 @@ export default function GroupLookup() {
         <input onInput={(e) => sGroupName(e.target.value)} />
         <button onClick={lookupGroup}>Lookup</button>
       </div>
-      {getGroupName ? console.log("in get") : null}
-      {getGroupName ? (
-        <Get
-          resource={`/groups?$filter=(displayName eq '${getGroupName}')&$select=id,displayName,groupTypes,membershipRule,members`}
-        >
-          <GroupInfo template="value" />
-        </Get>
+      {getGroupInfo ? (
+        <GroupInfo groupInfo={getGroupInfo} />
       ) : null}
     </div>
   );

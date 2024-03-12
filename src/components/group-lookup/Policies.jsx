@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { ProviderState, Providers } from "@microsoft/mgt-element";
-import styles from "./Scripts.module.css";
+import styles from "./Policies.module.css";
 
 export default function Policies(props) {
   const [getPolicies, setPolicies] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchPolicies = async () => {
+    setIsLoading(true);
     if (ProviderState.SignedIn) {
       // Iterate over Policies
       let [deviceCompliancePolicies, compliancePolicies] = await Promise.all([
@@ -56,6 +58,7 @@ export default function Policies(props) {
       ];
       // Update the state with the Scripts
       setPolicies(policies);
+      setIsLoading(false);
       console.log(policies);
     }
   };
@@ -64,7 +67,9 @@ export default function Policies(props) {
   }, [ProviderState]);
 
   return (
-    <div>
+    <div className={styles.card}>
+      {isLoading && <div className={styles.loader}></div>}
+      <div className={styles.container}>
       <h2>Policies</h2>
       <div className={styles.tablecontainer}>
         <table className={styles.table}>
@@ -76,7 +81,7 @@ export default function Policies(props) {
             </tr>
           </thead>
           <tbody>
-            {getPolicies ? (
+            {!isLoading && getPolicies ? (
               getPolicies
                 .filter((policy) => {
                   // Filter the Policies to only show Policies with an active assignment for the designated group
@@ -109,6 +114,7 @@ export default function Policies(props) {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 }

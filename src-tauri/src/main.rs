@@ -28,8 +28,9 @@ fn main() {
             .fullscreen(false)
             .resizable(true)
             .title("ADAM-Tool-V2")
-            .inner_size(1145.0, 750.0)
-            .min_inner_size(800.0, 750.0)
+            .inner_size(1175.0, 750.0)
+            .min_inner_size(1175.0, 750.0)
+            .max_inner_size(1175.0, 750.0)
             .build()?;
             Ok(())
         })

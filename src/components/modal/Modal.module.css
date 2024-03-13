@@ -1,0 +1,77 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.modalContent {
+    background-color: #333;
+    color: #fff;
+    padding: 0px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.modalHeader {
+    display: flex;
+    overflow: hidden;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 5px;
+    position: relative;
+    background-color: #2a2a2a;
+    width: 100%; /* Add this line */
+    box-sizing: border-box;
+}
+
+.modalTitle {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.modalClose {
+    cursor: pointer;
+    font-size: 14px;
+    color: #fff;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px; /* Adjust the padding to change the size of the button */
+    line-height: 1;
+}
+
+.modalBody {
+    margin-bottom: 10px;
+}
+
+.modalFooter {
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.modalButton {
+    margin-left: 10px;
+    padding: 8px 16px;
+    background-color: #555;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.modalButton:hover {
+    background-color: #777;
+}
